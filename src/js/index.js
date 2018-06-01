@@ -1,6 +1,6 @@
 import Search from './models/Search';
 import * as SearchView from './views/SearchView';
-import { elements } from './views/base';
+import { elements, renderLoader, elementsString, cleanLoader } from './views/base';
 
 /** Global state of the app
  * - Search Object
@@ -15,6 +15,20 @@ elements.searchForm.addEventListener('submit', e => {
     controllerSearch()
 });
 
+elements.searchRes.addEventListener('click', e => {
+    // 1) Click any inside the button, will always get the .btn
+    const btn = e.target.closest('.btn-inline');
+
+    if(!btn) return
+
+    let goToPage = parseInt(btn.dataset.goto, 10);
+
+    SearchView.cleanList();
+    SearchView.cleanResPage();
+
+    SearchView.renderResults(state.search.result, goToPage);
+})
+
 const controllerSearch = async () => {
     // 1) Get the user input
     const query = SearchView.getUserInput();
@@ -25,10 +39,12 @@ const controllerSearch = async () => {
     // 3) update de UI
     SearchView.cleanField();
     SearchView.cleanList();
+    renderLoader(elements.searchRes);
 
     // 4) Make the request
     await state.search.getResults();
 
     // 5) Show the result
+    cleanLoader();
     SearchView.renderResults(state.search.result);
 }
