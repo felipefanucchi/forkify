@@ -45,7 +45,7 @@ const renderButtons = (page, numResults, resPerPage) => {
 
     if (page === 1 && pages > 1) {
         buttons = buttonMarkup(page, 'next');
-    } else if (page > 1 && page < pages) {
+    } else if (page < pages) {
         buttons = `
             ${buttonMarkup(page, 'prev')} 
             ${buttonMarkup(page, 'next')}
@@ -58,7 +58,7 @@ const renderButtons = (page, numResults, resPerPage) => {
     elements.searchResPage.insertAdjacentHTML('afterbegin', buttons);
 }
 
-export const renderResults = (recipes, page = 1, resPerPage = 6) => {
+export const renderResults = (recipes, page = 1, resPerPage = 10) => {
     /** Page 1
      * start = 1 - 1 * 7 = 0
      * end = 1 * 7 = 7
@@ -73,6 +73,8 @@ export const renderResults = (recipes, page = 1, resPerPage = 6) => {
     const end = page * resPerPage;
     
     recipes.slice(start, end).forEach(renderRecipe);
+
+    if (recipes.length < resPerPage) return
     
     renderButtons(page, recipes.length, resPerPage)
 }
