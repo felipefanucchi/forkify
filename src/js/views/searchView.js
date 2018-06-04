@@ -54,7 +54,6 @@ const renderButtons = (page, numResults, resPerPage) => {
         buttons = buttonMarkup(page, 'prev');
     }
 
-
     elements.searchResPage.insertAdjacentHTML('afterbegin', buttons);
 }
 
