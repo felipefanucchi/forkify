@@ -74,7 +74,7 @@ const controllerRecipe = async () => {
     try{
         // Making the request to get the recipe
         await state.recipe.getRecipe();
-
+        state.recipe.parseIng();
         // Calc methods
         state.recipe.calcTime();
         state.recipe.calcServings();

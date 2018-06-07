@@ -30,4 +30,62 @@ export default class Recipe {
     calcServings () {
         this.servings = 4;
     }
+
+    parseIng() {
+        const unitsLong = ['tablespoons', 'tablespoon', 'ounces', 'ounce', 'teaspoons', 'teaspoon', 'cups', 'pounds'];
+        const unitsShort = ['tbsp', 'tbsp', 'oz', 'oz', 'tsp', 'tsp', 'cup', 'pound'];
+
+        const newIng = this.ingredients.map(e => {
+            // 1) Uniform units
+            let ing = e.toLowerCase();
+            
+            unitsLong.forEach((unit, i) => {
+               ing = ing.replace(unit, unitsShort[i])
+            });
+
+            // 2) Remove Parentheses
+            ing = ing.replace(/ *\([^)]*\) */g, " ");
+
+            // 3) Parse ingredients into, count, unit and ingredient into COUNT, UNIT and INGREDIENT.
+            const arrEachIng = ing.split(' ');
+            const unitIndex = arrEachIng.findIndex(el => unitsShort.includes(el));
+            let objIng;
+
+            if(unitIndex > -1) {
+                // There is UNIT
+                const arrCount = arrEachIng.slice(0, unitIndex);
+                let count;
+
+                if(arrCount.length === 1) {
+                    count = eval(arrEachIng[0].replace('-','+'));
+                } else {
+                    count = eval(arrEachIng.slice(0, unitIndex).join('+'));
+                }
+
+                objIng = {
+                    count,
+                    unit: arrEachIng[unitIndex],
+                    ingredient: arrEachIng.slice(unitIndex + 1).join(' ')
+                }
+            } else if(parseInt(arrEachIng[0])) {
+                // There is a number instead a unit
+                objIng = {
+                    count: parseInt(arrEachIng[0]),
+                    unit: '',
+                    ingredient: arrEachIng.slice(1).join(' ')
+                }
+            } else if(unitIndex === -1) {
+                // There is NO UNIT
+                objIng = {
+                    count: 1,
+                    unit: '',
+                    ingredient: ing
+                }
+            }
+
+
+            return objIng; 
+        });
+        this.ingredients = newIng;
+    }
 }
