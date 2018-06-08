@@ -1,6 +1,7 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
 import * as SearchView from './views/SearchView';
+import * as RecipeView from './views/RecipeView';
 import { elements, renderLoader, elementsString, cleanLoader } from './views/base';
 
 /** Global state of the app
@@ -11,14 +12,15 @@ import { elements, renderLoader, elementsString, cleanLoader } from './views/bas
  */
 const state = {};
 
-elements.searchForm.addEventListener('submit', e => {
-    e.preventDefault();
-    controllerSearch()
-});
 
 /**
  * SEARCH CONTROLLER        
  */
+
+elements.searchForm.addEventListener('submit', e => {
+    e.preventDefault();
+    controllerSearch()
+});
 
 elements.searchRes.addEventListener('click', e => {
     // 1) Click any inside the button, will always get the .btn
@@ -71,6 +73,9 @@ const controllerRecipe = async () => {
     // Saving the recipe in the data state
     state.recipe = new Recipe(id);
 
+    RecipeView.cleanRecipe();
+    renderLoader(elements.recipe);
+
     try{
         // Making the request to get the recipe
         await state.recipe.getRecipe();
@@ -78,10 +83,20 @@ const controllerRecipe = async () => {
         // Calc methods
         state.recipe.calcTime();
         state.recipe.calcServings();
-
-        console.log(state.recipe);
+        
+        cleanLoader();
+        // Render the recipe on the view
+        RecipeView.renderRecipe(state.recipe);
     } catch(err) {
-        alert('Something went wrong with the recipe processing... ):');
+        cleanLoader();
+        const message = `
+            <figure class="recipe__fig">
+            <img src="img/404.PNG" alt="Error" class="recipe__img">
+                <h1 class="recipe__title">
+                    <span>Something went wrong while processing the recipe ):</span>
+                </h1>
+            </figure>`;
+        elements.recipe.insertAdjacentHTML('afterbegin', message)
     }
  }
 
