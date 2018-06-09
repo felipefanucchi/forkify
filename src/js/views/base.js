@@ -40,5 +40,6 @@ export const renderLoader = parent => {
 
 export const cleanLoader = () => {
     const loader = document.querySelector(`.${elementsString.loader}`);
+    if(!loader) return; // This is because, we call the fn more than one time, and if there is no loader, it will throw an error
     loader.parentNode.removeChild(loader);
 }

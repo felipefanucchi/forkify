@@ -1,4 +1,20 @@
 import { elements } from './base';
+import Fraction from 'fractional';
+
+export const formatCount = count => {
+    if(!count) return;
+
+    const [int, dec] = count.toString().split('.');
+    // Steps 
+
+    /**
+     * 1) Se nao houver decimal, simplesmente retorna o inteiro
+     * 2) Caso haja um decimal, porem nao haja um inteiro,
+     * Devo fracionar o decimal e retornar o valor fracionado ex: new Fraction(dec)
+     * 3) Caso haja um inteiro e um decimal, devo somente fracionar o decimal e retornar o inteiro
+     * Ex: new Fraction(int - count) = new Fraction(1 - 1.5) = 0.5 e entao retorno um template string com ambos
+    */
+};
 
 export const renderRecipe = recipe => {
     const markup = `
@@ -84,7 +100,7 @@ const createIngredient = ingredient => {
         <svg class="recipe__icon">
             <use href="img/icons.svg#icon-check"></use>
         </svg>
-        <div class="recipe__count">${ingredient.count}</div>
+        <div class="recipe__count">${formatCount(2.5)}</div>
         <div class="recipe__ingredient">
             <span class="recipe__unit">${ingredient.unit}</span>
             ${ingredient.ingredient}
