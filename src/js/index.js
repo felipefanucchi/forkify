@@ -73,6 +73,9 @@ const controllerRecipe = async () => {
     // Saving the recipe in the data state
     state.recipe = new Recipe(id);
 
+    // Highlighting the selected recipe
+    if(state.search) SearchView.highlightSelected(id);
+
     RecipeView.cleanRecipe();
     renderLoader(elements.recipe);
 
@@ -88,6 +91,7 @@ const controllerRecipe = async () => {
         // Render the recipe on the view
         RecipeView.renderRecipe(state.recipe);
     } catch(err) {
+        console.log(err);
         cleanLoader();
         const message = `
             <figure class="recipe__fig">
@@ -101,3 +105,19 @@ const controllerRecipe = async () => {
  }
 
  ['load','hashchange'].forEach(event => window.addEventListener(event, controllerRecipe));
+
+ // Making the DOM Manipulation
+ elements.recipe.addEventListener('click', e => {
+     
+     if (e.target.matches('.btn-decrease, .btn-decrease *')) {
+         // Decrease the count and the servings
+         if(state.recipe.servings > 1) {
+            state.recipe.updateServings('dec');
+            RecipeView.updateCountIng(state.recipe);
+         }
+    } else if(e.target.matches('.btn-increase, .btn-increase *')) {
+        // increase the count and the servings
+        state.recipe.updateServings('inc');
+        RecipeView.updateCountIng(state.recipe);
+    } 
+ })

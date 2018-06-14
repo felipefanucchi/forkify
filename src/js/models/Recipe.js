@@ -30,7 +30,17 @@ export default class Recipe {
     calcServings () {
         this.servings = 4;
     }
+    
+    updateServings (type) {
+        const newServings = (type === 'inc') ? this.servings + 1 : this.servings -1;
 
+        this.ingredients.forEach(ing =>{
+            ing.count *= (newServings / this.servings);
+        });
+
+        this.servings = newServings;
+    }
+    
     parseIng() {
         const unitsLong = ['tablespoons', 'tablespoon', 'ounces', 'ounce', 'teaspoons', 'teaspoon', 'cups', 'pounds'];
         const unitsShort = ['tbsp', 'tbsp', 'oz', 'oz', 'tsp', 'tsp', 'cup', 'pound'];
@@ -88,4 +98,5 @@ export default class Recipe {
         });
         this.ingredients = newIng;
     }
+
 }

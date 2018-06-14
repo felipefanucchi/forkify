@@ -1,10 +1,10 @@
 import { elements } from './base';
-import Fraction from 'fractional';
+import { Fraction } from 'fractional';
 
 export const formatCount = count => {
     if(!count) return;
 
-    const [int, dec] = count.toString().split('.');
+    const [int, dec] = count.toString().split('.').map(el => parseInt(el));
     // Steps 
 
     /**
@@ -14,6 +14,17 @@ export const formatCount = count => {
      * 3) Caso haja um inteiro e um decimal, devo somente fracionar o decimal e retornar o inteiro
      * Ex: new Fraction(int - count) = new Fraction(1 - 1.5) = 0.5 e entao retorno um template string com ambos
     */
+
+    if(!dec) {
+        return int
+    } else if(int === 0) {
+        return new Fraction(count)
+    } else {
+        const decFraction = new Fraction(count - int);
+        return `${int} ${decFraction}`
+    }
+
+    return '?'
 };
 
 export const renderRecipe = recipe => {
@@ -29,7 +40,7 @@ export const renderRecipe = recipe => {
                 <svg class="recipe__info-icon">
                     <use href="img/icons.svg#icon-stopwatch"></use>
                 </svg>
-                <span class="recipe__info-data recipe__info-data--minutes">45</span>
+                <span class="recipe__info-data recipe__info-data--minutes">${recipe.time}</span>
                 <span class="recipe__info-text"> minutes</span>
             </div>
             <div class="recipe__info">
@@ -40,12 +51,12 @@ export const renderRecipe = recipe => {
                 <span class="recipe__info-text"> servings</span>
 
                 <div class="recipe__info-buttons">
-                    <button class="btn-tiny">
+                    <button class="btn-tiny btn-decrease">
                         <svg>
                             <use href="img/icons.svg#icon-circle-with-minus"></use>
                         </svg>
                     </button>
-                    <button class="btn-tiny">
+                    <button class="btn-tiny btn-increase">
                         <svg>
                             <use href="img/icons.svg#icon-circle-with-plus"></use>
                         </svg>
@@ -100,7 +111,7 @@ const createIngredient = ingredient => {
         <svg class="recipe__icon">
             <use href="img/icons.svg#icon-check"></use>
         </svg>
-        <div class="recipe__count">${formatCount(2.5)}</div>
+        <div class="recipe__count">${formatCount(ingredient.count)}</div>
         <div class="recipe__ingredient">
             <span class="recipe__unit">${ingredient.unit}</span>
             ${ingredient.ingredient}
@@ -110,4 +121,16 @@ const createIngredient = ingredient => {
 
 export const cleanRecipe = () => {
     elements.recipe.innerHTML = '';
+}
+
+export const updateCountIng = recipe => {
+    const data = document.querySelector('.recipe__info-data--people');
+
+    data.textContent = recipe.servings;
+
+    const newCounts = Array.from(document.querySelectorAll('.recipe__count'));
+
+    newCounts.forEach((ing, i) => {
+        ing.textContent = formatCount(recipe.ingredients[i].count)
+    })
 }
