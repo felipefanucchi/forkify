@@ -1,7 +1,9 @@
 import Search from './models/Search';
 import Recipe from './models/Recipe';
+import List from './models/List';
 import * as SearchView from './views/SearchView';
 import * as RecipeView from './views/RecipeView';
+import * as ListView from './views/ListView';
 import { elements, renderLoader, elementsString, cleanLoader } from './views/base';
 
 /** Global state of the app
@@ -11,7 +13,7 @@ import { elements, renderLoader, elementsString, cleanLoader } from './views/bas
  * - Liked Recipes
  */
 const state = {};
-
+window.state = state;
 
 /**
  * SEARCH CONTROLLER        
@@ -104,6 +106,24 @@ const controllerRecipe = async () => {
     }
  }
 
+ /**
+ * LIST CONTROLLER        
+ */
+
+ const controllerList = () => {
+    if(!state.list) state.list = new List();
+
+    state.recipe.ingredients.forEach(el => {
+        state.list.addItem(el.count, el.unit, el.ingredient)
+    });
+
+    state.list.items.forEach(el => {
+        ListView.renderItem(el);
+    });
+ }
+
+ // EVENTS
+
  ['load','hashchange'].forEach(event => window.addEventListener(event, controllerRecipe));
 
  // Making the DOM Manipulation
@@ -119,5 +139,19 @@ const controllerRecipe = async () => {
         // increase the count and the servings
         state.recipe.updateServings('inc');
         RecipeView.updateCountIng(state.recipe);
-    } 
+     } else if (e.target.matches('.recipe_btn--add, .recipe_btn--add *')) {
+        controllerList();
+     }
+ })
+
+ elements.shoppingList.addEventListener('click', e => {
+    const id = e.target.closest('.shopping__item').dataset.itemid;
+
+    if (e.target.matches('.shopping__delete, .shopping__delete *')) {
+        state.list.deleteItem(id);
+        ListView.deleteItem(id);
+    } else if (e.target.matches('.shopping__count--value')) {
+        const value = parseFloat(e.target.value);
+        state.list.updateItem(id, value);
+    }
  })
