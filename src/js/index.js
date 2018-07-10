@@ -15,7 +15,6 @@ import { elements, renderLoader, elementsString, cleanLoader } from './views/bas
  * - Liked Recipes
  */
 const state = {};
-window.state = state;
 
 /**
  * SEARCH CONTROLLER        
@@ -68,7 +67,6 @@ const controllerSearch = async () => {
 /**
  * RECIPE CONTROLLER        
  */
-
 const controllerRecipe = async () => {
     // Get the hash from the url
     const id = window.location.hash.replace('#', '');
@@ -113,7 +111,6 @@ const controllerRecipe = async () => {
  /**
  * LIST CONTROLLER        
  */
-
  const controllerList = () => {
     if(!state.list) state.list = new List();
 

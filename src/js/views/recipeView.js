@@ -4,7 +4,9 @@ import { Fraction } from 'fractional';
 export const formatCount = count => {
     if(!count) return;
 
-    const [int, dec] = count.toString().split('.').map(el => parseInt(el));
+    const newcount = Math.round(count * 10000) / 10000;
+
+    const [int, dec] = newcount.toString().split('.').map(el => parseInt(el));
     // Steps 
 
     /**
@@ -12,15 +14,15 @@ export const formatCount = count => {
      * 2) Caso haja um decimal, porem nao haja um inteiro,
      * Devo fracionar o decimal e retornar o valor fracionado ex: new Fraction(dec)
      * 3) Caso haja um inteiro e um decimal, devo somente fracionar o decimal e retornar o inteiro
-     * Ex: new Fraction(int - count) = new Fraction(1 - 1.5) = 0.5 e entao retorno um template string com ambos
+     * Ex: new Fraction(int - newcount) = new Fraction(1 - 1.5) = 0.5 e entao retorno um template string com ambos
     */
 
     if(!dec) {
         return int
     } else if(int === 0) {
-        return new Fraction(count)
+        return new Fraction(newcount)
     } else {
-        const decFraction = new Fraction(count - int);
+        const decFraction = new Fraction(newcount - int);
         return `${int} ${decFraction}`
     }
 
