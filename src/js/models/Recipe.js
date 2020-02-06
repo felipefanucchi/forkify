@@ -8,7 +8,7 @@ export default class Recipe {
 
     async getRecipe() {
         try {
-            const res = await axios(`${PROXY}${BASE_URL}/get?key=${KEY}&rId=${this.id}`);
+            const res = await axios(`${BASE_URL}/get?rId=${this.id}`);
             this.image = res.data.recipe.image_url;
             this.title = res.data.recipe.title;
             this.author = res.data.recipe.publisher;
